@@ -14,11 +14,23 @@ Scores are saved in that browser, so you can switch between the deck and the sco
 ## Scoring an answer
 
 1. Click a team card, or press its number key (**1** to **8**).
-2. Type the answer's score. It shows as dots so the room can't see it.
+2. Type the answer's score. Nothing you type shows on screen, not even how many digits, just "Ready ✓".
 3. Press **Enter**. The column counts down from 100 to the score.
 4. Press **Enter** again to move to the next team.
 
 Shortcuts in the score panel: **P** pointless (0), **W** wrong (100), **A** another answer for the same team, **Esc** back to the board.
+
+## Final round
+
+One team gets a question with three answers (A, B, C) and picks one. The goal is a pointless answer.
+
+1. **Before the game:** click **Final round**, then pick the team (it defaults to the current leader) and enter the question, the three answers and each answer's score. Scores stay hidden as "Set ✓"; tick **Show scores** to check them. Everything is saved in the browser.
+2. **On the night:** click **Final round**, then **Show on screen**. The question and answers fill the TV.
+3. When the team decides, click their answer or press **A**, **B** or **C**. It's highlighted gold as their pick.
+4. Press **Enter** (or **Reveal**). The column counts down to that answer's score. A 0 gets a gold "Pointless!" win with confetti.
+5. Press **Enter** again to reveal the other two answers one at a time, then **Back to board**.
+
+The final round doesn't change the team totals.
 
 ## Board controls
 

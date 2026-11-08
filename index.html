@@ -63,7 +63,7 @@
   .title {
     flex: 1 1 260px;
     margin: 0;
-    font-size: clamp(22px, 3.2vw, 44px);
+    font-size: clamp(20px, 2.4vw, 38px);
     font-weight: 800;
     letter-spacing: .04em;
     text-transform: uppercase;
@@ -99,12 +99,12 @@
   .round button:hover { background: rgba(255,255,255,.14); }
   .tools { display: flex; flex-wrap: wrap; gap: 8px; }
   .btn {
-    padding: 8px 14px;
+    padding: 7px 12px;
     border-radius: 999px;
     border: 1px solid var(--line);
     background: rgba(255, 255, 255, .06);
     font-weight: 650;
-    font-size: 15px;
+    font-size: 14px;
     cursor: pointer;
     white-space: nowrap;
   }
@@ -297,15 +297,21 @@
   }
   .field input::placeholder { color: rgba(147, 172, 217, .35); }
   .field input:focus { outline: none; border-color: var(--cyan); box-shadow: 0 0 24px rgba(63,227,255,.35); }
-  .field.masked input { color: transparent; }
+  /* Masked: typed digits, caret and selection are all invisible, so the room can't count digits.
+     The only feedback is a fixed "Ready ✓" once anything is entered. */
+  .field.masked input { color: transparent; caret-color: transparent; }
+  .field.masked input::selection { background: transparent; color: transparent; }
   .mask {
     position: absolute; inset: 0;
     display: flex; align-items: center; justify-content: center;
     pointer-events: none;
-    font-size: clamp(30px, 4vw, 52px);
-    letter-spacing: .25em;
-    color: #fff;
+    font-size: clamp(22px, 3vw, 36px);
+    font-weight: 800;
+    color: var(--cyan);
   }
+  .field.sm { width: 100%; }
+  .field.sm input { font-size: 20px; padding: 9px 8px; border-radius: 12px; border-width: 1px; }
+  .field.sm .mask { font-size: 15px; }
   .field:not(.masked) .mask { display: none; }
   .peek { display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--muted); cursor: pointer; }
   .peek input { width: 18px; height: 18px; accent-color: var(--cyan); }
@@ -385,6 +391,61 @@
   }
   .toast.show { opacity: 1; transform: translate(-50%, 0); }
 
+  /* ---------- final round ---------- */
+  .final .reveal { width: min(1400px, 100%); height: min(92vh, 900px); }
+  .final.win .reveal { box-shadow: 0 0 0 3px rgba(255, 200, 61, .7), 0 0 90px rgba(255, 200, 61, .35), 0 30px 80px rgba(0,0,0,.5); }
+  .final .rv-left { gap: 14px; max-height: 100%; overflow: auto; padding: 4px; }
+  .fs-kicker { color: var(--gold); font-weight: 800; font-size: 15px; letter-spacing: .18em; text-transform: uppercase; }
+  .final .rv-team { font-size: clamp(24px, 3vw, 42px); }
+  .fs-q { font-size: clamp(22px, 2.8vw, 40px); font-weight: 800; line-height: 1.2; overflow-wrap: anywhere; }
+  .fs-opts { display: flex; flex-direction: column; gap: 12px; }
+  .fopt {
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 16px;
+    padding: 12px 18px;
+    border-radius: 18px;
+    border: 2px solid var(--line);
+    background: rgba(0, 0, 0, .28);
+    text-align: left;
+    font-size: clamp(18px, 2.2vw, 30px); font-weight: 800;
+    cursor: pointer;
+    transition: border-color .2s, box-shadow .2s, background .2s;
+  }
+  .fopt:hover:not([aria-disabled="true"]) { border-color: var(--cyan); }
+  .fopt[aria-disabled="true"] { cursor: default; }
+  .fopt .fl { width: 1.7em; height: 1.7em; display: grid; place-items: center; border-radius: 50%; background: rgba(63, 227, 255, .15); color: var(--cyan); font-size: .8em; }
+  .fopt .ft { overflow-wrap: anywhere; }
+  .fopt .fpts { font-variant-numeric: tabular-nums; font-size: 1.15em; min-width: 2ch; text-align: right; }
+  .fopt.active { border-color: var(--cyan); box-shadow: 0 0 30px rgba(63, 227, 255, .45); }
+  .fopt.picked { border-color: var(--gold); background: rgba(255, 200, 61, .10); box-shadow: 0 0 0 2px rgba(255, 200, 61, .4), 0 0 34px rgba(255, 200, 61, .35); }
+  .fopt.picked .fl { background: var(--gold); color: #2a1d00; }
+  .fopt.zero { background: rgba(255, 200, 61, .18); }
+  .fopt.zero .fpts { color: var(--gold); text-shadow: 0 0 18px rgba(255, 200, 61, .8); }
+  .fopt.wrong .fpts { color: var(--red); }
+  .fs-msg { min-height: 1.2em; font-size: clamp(22px, 2.8vw, 42px); font-weight: 800; line-height: 1.15; }
+  .fs-msg.gold { color: var(--gold); text-shadow: 0 0 30px rgba(255, 200, 61, .7); animation: pop .5s ease-out; transform-origin: left center; }
+  .fs-msg.red { color: var(--red); }
+  .confetti { position: absolute; inset: 0; pointer-events: none; overflow: hidden; z-index: 2; }
+  .confetti i { position: absolute; top: -24px; width: 10px; height: 16px; border-radius: 2px; animation: fall linear forwards; }
+  @keyframes fall { to { transform: translate(var(--x), 110vh) rotate(var(--r)); } }
+
+  .sheet.wide { width: min(660px, 100%); }
+  .sheet .note { margin: -8px 0 6px; color: var(--muted); font-size: 14px; }
+  .sheet label.flbl { display: block; margin: 14px 0 6px; font-weight: 700; color: var(--muted); font-size: 14px; }
+  .sheet select, .sheet textarea, .frow .ftext {
+    width: 100%;
+    padding: 10px 12px;
+    border-radius: 12px;
+    border: 1px solid var(--line);
+    background: rgba(0, 0, 0, .35);
+    color: var(--text);
+    font: inherit; font-size: 17px; font-weight: 600;
+  }
+  .sheet textarea { resize: vertical; min-height: 64px; }
+  .sheet select:focus, .sheet textarea:focus, .frow .ftext:focus { outline: none; border-color: var(--cyan); }
+  .frow { display: grid; grid-template-columns: 28px 1fr 96px; gap: 10px; align-items: center; margin-bottom: 10px; }
+  .frow .fl { text-align: center; font-weight: 800; font-size: 20px; color: var(--cyan); }
+  .frow .field input:focus { outline: none; border-color: var(--cyan); }
+
   @keyframes shake { 20%, 60% { transform: translateX(-8px); } 40%, 80% { transform: translateX(8px); } }
   @keyframes pop { 0% { transform: scale(.7); } 70% { transform: scale(1.08); } 100% { transform: scale(1); } }
   .rv-result.gold { transform-origin: left center; }
@@ -394,13 +455,14 @@
     .board { grid-auto-rows: auto; }
     .card { min-height: 220px; }
     .hint { display: none; }
-    .reveal { height: auto; max-height: 94vh; overflow: auto; grid-template-columns: 1fr; gap: 18px; }
+    .reveal, .final .reveal { height: auto; max-height: 94vh; overflow: auto; grid-template-columns: 1fr; gap: 18px; }
+    .final .rv-left { max-height: none; overflow: visible; }
     .rv-right { order: -1; height: 36vh; justify-content: center; }
     .counter { font-size: 64px; }
     .column { width: 64px; }
   }
   @media (prefers-reduced-motion: reduce) {
-    .column.pointless, .rv-result.gold { animation: none; }
+    .column.pointless, .rv-result.gold, .fs-msg.gold { animation: none; }
     .meter i, .toast { transition: none; }
   }
 </style>
@@ -417,6 +479,7 @@
   <nav class="tools">
     <button class="btn" id="undoBtn">Undo</button>
     <button class="btn" id="teamsBtn">Teams</button>
+    <button class="btn gold" id="finalBtn">Final round</button>
     <button class="btn" id="speedBtn" title="Countdown speed">Speed: Slow</button>
     <button class="btn" id="soundBtn" aria-pressed="true">Sound on</button>
     <button class="btn" id="fsBtn">Full screen</button>
@@ -481,6 +544,63 @@
   </div>
 </div>
 
+<!-- Final round: setup (host) -->
+<div class="overlay" id="finalSetup" hidden role="dialog" aria-modal="true" aria-labelledby="fsuTitle">
+  <div class="sheet wide">
+    <h2 id="fsuTitle">Final round</h2>
+    <p class="note">Best set up before the game: the question and answers show on screen. Scores stay hidden.</p>
+    <label class="flbl" for="fTeam">Team playing the final</label>
+    <select id="fTeam"></select>
+    <label class="flbl" for="fQ">Question</label>
+    <textarea id="fQ" rows="2" maxlength="200" placeholder="e.g. Name a country that borders Germany"></textarea>
+    <label class="flbl">Three answers and their scores (0–100)</label>
+    <div class="frow">
+      <span class="fl">A</span>
+      <input class="ftext" data-k="0" maxlength="80" placeholder="Answer A" aria-label="Answer A">
+      <div class="field sm masked"><input class="fscore" data-k="0" inputmode="numeric" maxlength="3" placeholder="pts" autocomplete="off" aria-label="Score for answer A"><span class="mask" aria-hidden="true"></span></div>
+    </div>
+    <div class="frow">
+      <span class="fl">B</span>
+      <input class="ftext" data-k="1" maxlength="80" placeholder="Answer B" aria-label="Answer B">
+      <div class="field sm masked"><input class="fscore" data-k="1" inputmode="numeric" maxlength="3" placeholder="pts" autocomplete="off" aria-label="Score for answer B"><span class="mask" aria-hidden="true"></span></div>
+    </div>
+    <div class="frow">
+      <span class="fl">C</span>
+      <input class="ftext" data-k="2" maxlength="80" placeholder="Answer C" aria-label="Answer C">
+      <div class="field sm masked"><input class="fscore" data-k="2" inputmode="numeric" maxlength="3" placeholder="pts" autocomplete="off" aria-label="Score for answer C"><span class="mask" aria-hidden="true"></span></div>
+    </div>
+    <label class="peek"><input type="checkbox" id="fPeek"> Show scores</label>
+    <div class="foot row">
+      <button class="btn" id="fClear">Clear</button>
+      <button class="btn" id="fCancel">Cancel</button>
+      <button class="btn go big" id="fGo">Show on screen</button>
+    </div>
+  </div>
+</div>
+
+<!-- Final round: TV screen -->
+<div class="overlay final" id="finalScreen" hidden role="dialog" aria-modal="true" aria-labelledby="fsQ">
+  <div class="reveal">
+    <div class="rv-left">
+      <div class="fs-kicker">Final round</div>
+      <div class="rv-team" id="fsTeam">Team</div>
+      <div class="fs-q" id="fsQ"></div>
+      <div class="fs-opts" id="fsOpts"></div>
+      <div class="fs-msg" id="fsMsg" role="status"></div>
+      <div class="row">
+        <button class="btn go big" id="fsReveal" disabled>Reveal</button>
+        <button class="btn go big" id="fsOthers" hidden>Reveal the other answers</button>
+        <button class="btn" id="fsBack">Back to board</button>
+      </div>
+    </div>
+    <div class="rv-right" aria-hidden="true">
+      <div class="counter" id="fCounter">100</div>
+      <div class="column" id="fColumn"></div>
+    </div>
+  </div>
+  <button class="x" id="fsX" aria-label="Close">&times;</button>
+</div>
+
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
 <script>
@@ -517,7 +637,9 @@
     return fresh();
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(S)); } catch (e) { /* ignore */ } }
+  function blankFinal() { return { team: null, q: '', opts: [0, 1, 2].map(() => ({ text: '', score: '' })) }; }
   let S = load();
+  if (!S.final || !Array.isArray(S.final.opts) || S.final.opts.length !== 3) S.final = blankFinal();
 
   const totalOf = id => S.entries.reduce((a, e) => e.team === id ? a + e.value : a, 0);
   const teamById = id => S.teams.find(t => t.id === id);
@@ -647,19 +769,30 @@
   };
 
   /* ---------- reveal ---------- */
-  const rvEl = $('#reveal'), col = $('#column'), counter = $('#counter');
+  // A 100-segment countdown column; used by both the round reveal and the final round.
+  function makeColumn(colEl, counterEl) {
+    const segs = [];
+    for (let k = 0; k < 100; k++) {
+      const d = document.createElement('i');
+      d.className = 'seg';
+      d.style.setProperty('--lit', `hsl(${168 + k * 0.32} 95% ${48 + k * 0.14}%)`);
+      colEl.appendChild(d); segs.push(d);
+    }
+    return {
+      set(v) {
+        for (let k = 0; k < 100; k++) segs[k].classList.toggle('on', k < v);
+        counterEl.textContent = v;
+      },
+      reset() { colEl.className = 'column'; counterEl.className = 'counter'; this.set(100); },
+      finish(v) {
+        const cls = v === 0 ? 'pointless' : v === 100 ? 'wrong' : '';
+        if (cls) { colEl.classList.add(cls); counterEl.classList.add(cls); }
+      }
+    };
+  }
+  const rvEl = $('#reveal');
+  const mainCol = makeColumn($('#column'), $('#counter'));
   const form = $('#rvForm'), input = $('#rvInput'), field = $('#rvField'), mask = $('#rvMask'), after = $('#rvAfter');
-  const segs = [];
-  for (let k = 0; k < 100; k++) {
-    const d = document.createElement('i');
-    d.className = 'seg';
-    d.style.setProperty('--lit', `hsl(${168 + k * 0.32} 95% ${48 + k * 0.14}%)`);
-    col.appendChild(d); segs.push(d);
-  }
-  function setColumn(v) {
-    for (let k = 0; k < 100; k++) segs[k].classList.toggle('on', k < v);
-    counter.textContent = v;
-  }
   const rv = { i: 0, busy: false };
 
   function openReveal(i) {
@@ -673,8 +806,7 @@
     $('#peek').checked = !!S.peek;
     field.classList.toggle('masked', !S.peek);
     form.hidden = false; after.hidden = true;
-    col.className = 'column'; counter.className = 'counter';
-    setColumn(100);
+    mainCol.reset();
     rvEl.hidden = false;
     input.focus();
   }
@@ -690,16 +822,16 @@
     if (b) b.focus({ preventScroll: true });
   }
   const wait = ms => new Promise(r => setTimeout(r, ms));
-  function countdown(target) {
+  function countdown(target, column) {
     return new Promise(res => {
       const steps = 100 - target;
-      if (steps <= 0) { setColumn(100); res(); return; }
+      if (steps <= 0) { column.set(100); res(); return; }
       const dur = Math.max(1200, steps * speed().ms);
       sfx.sweep(dur / 1000, target);
       const t0 = performance.now();
       const tick = now => {
         const p = Math.min(1, (now - t0) / dur);
-        setColumn(Math.round(100 - steps * p));
+        column.set(Math.round(100 - steps * p));
         if (p < 1) requestAnimationFrame(tick); else res();
       };
       requestAnimationFrame(tick);
@@ -721,16 +853,15 @@
     form.hidden = true; after.hidden = true;
     input.blur();
     await wait(speed().pause);
-    await countdown(v);
+    await countdown(v, mainCol);
     render();
 
     const res = $('#rvResult');
+    mainCol.finish(v);
     if (v === 0) {
-      res.className = 'rv-result gold'; res.textContent = 'Pointless answer!';
-      col.classList.add('pointless'); counter.classList.add('pointless'); sfx.pointless();
+      res.className = 'rv-result gold'; res.textContent = 'Pointless answer!'; sfx.pointless();
     } else if (v === 100) {
-      res.className = 'rv-result red'; res.textContent = 'Wrong answer';
-      col.classList.add('wrong'); counter.classList.add('wrong'); sfx.wrong();
+      res.className = 'rv-result red'; res.textContent = 'Wrong answer'; sfx.wrong();
     } else {
       res.className = 'rv-result'; res.textContent = `${v} point${v === 1 ? '' : 's'}`; sfx.ding();
     }
@@ -747,7 +878,7 @@
   input.addEventListener('input', () => {
     const clean = input.value.replace(/\D/g, '').slice(0, 3);
     if (clean !== input.value) input.value = clean;
-    mask.textContent = '●'.repeat(clean.length);
+    mask.textContent = clean ? 'Ready ✓' : '';
   });
   $('#peek').addEventListener('change', e => {
     S.peek = e.target.checked; save();
@@ -763,6 +894,197 @@
   $('#rvAgain').addEventListener('click', () => openReveal(rv.i));
   $('#rvClose').addEventListener('click', closeReveal);
   $('#rvX').addEventListener('click', closeReveal);
+
+  /* ---------- final round ---------- */
+  const fsu = $('#finalSetup'), fsc = $('#finalScreen'), fsOpts = $('#fsOpts');
+  const finalCol = makeColumn($('#fColumn'), $('#fCounter'));
+  const LETTERS = ['A', 'B', 'C'];
+  const fz = { pick: null, active: null, done: [false, false, false], busy: false };
+
+  // Lowest total among teams that have answered; first team if nobody has.
+  function leaderIndex() {
+    let best = 0, bestTot = Infinity;
+    S.teams.forEach((t, i) => {
+      if (!S.entries.some(e => e.team === t.id)) return;
+      const tot = totalOf(t.id);
+      if (tot < bestTot) { bestTot = tot; best = i; }
+    });
+    return best;
+  }
+  const finalTeam = () => teamById(S.final.team) || S.teams[leaderIndex()];
+
+  function openFinalSetup() {
+    const f = S.final;
+    const sel = $('#fTeam');
+    sel.innerHTML = S.teams.map(t => `<option value="${esc(t.id)}">${esc(t.name)}</option>`).join('');
+    sel.value = finalTeam().id;
+    $('#fQ').value = f.q;
+    fsu.querySelectorAll('.ftext').forEach(el => { el.value = f.opts[+el.dataset.k].text; });
+    fsu.querySelectorAll('.fscore').forEach(el => {
+      el.value = f.opts[+el.dataset.k].score;
+      el.nextElementSibling.textContent = el.value ? 'Set ✓' : '';
+    });
+    $('#fPeek').checked = false;
+    fsu.querySelectorAll('.field.sm').forEach(el => el.classList.add('masked'));
+    fsu.hidden = false;
+    $('#fQ').focus();
+  }
+  function closeFinalSetup() { fsu.hidden = true; }
+
+  fsu.addEventListener('input', e => {
+    const el = e.target, f = S.final;
+    if (el.id === 'fQ') f.q = el.value;
+    else if (el.classList.contains('ftext')) f.opts[+el.dataset.k].text = el.value;
+    else if (el.classList.contains('fscore')) {
+      const clean = el.value.replace(/\D/g, '').slice(0, 3);
+      if (clean !== el.value) el.value = clean;
+      f.opts[+el.dataset.k].score = clean;
+      el.nextElementSibling.textContent = clean ? 'Set ✓' : '';
+    }
+    save();
+  });
+  $('#fTeam').addEventListener('change', e => { S.final.team = e.target.value; save(); });
+  $('#fPeek').addEventListener('change', e => {
+    fsu.querySelectorAll('.field.sm').forEach(el => el.classList.toggle('masked', !e.target.checked));
+  });
+  $('#fClear').addEventListener('click', () => {
+    if (!confirm('Clear the final round question, answers and scores?')) return;
+    S.final = blankFinal(); save(); openFinalSetup();
+  });
+  $('#fCancel').addEventListener('click', closeFinalSetup);
+  $('#fGo').addEventListener('click', () => {
+    const f = S.final;
+    f.team = $('#fTeam').value;
+    if (!f.q.trim()) { toast('Add the question first'); $('#fQ').focus(); return; }
+    for (let k = 0; k < 3; k++) {
+      if (!f.opts[k].text.trim()) {
+        toast(`Add answer ${LETTERS[k]}`);
+        fsu.querySelector(`.ftext[data-k="${k}"]`).focus();
+        return;
+      }
+      const s = f.opts[k].score;
+      if (!/^\d{1,3}$/.test(s) || +s > 100) {
+        toast(`Answer ${LETTERS[k]} needs a score from 0 to 100`);
+        const inp = fsu.querySelector(`.fscore[data-k="${k}"]`), box = inp.parentElement;
+        box.classList.remove('shake'); void box.offsetWidth; box.classList.add('shake');
+        inp.focus();
+        return;
+      }
+    }
+    save();
+    closeFinalSetup();
+    openFinalScreen();
+  });
+
+  function setFinalMsg(text, cls) {
+    const m = $('#fsMsg');
+    m.className = 'fs-msg' + (cls ? ' ' + cls : '');
+    m.textContent = text;
+  }
+  function renderFinalOpts() {
+    const locked = fz.busy || fz.done.some(Boolean);
+    fsOpts.innerHTML = S.final.opts.map((o, k) => {
+      const cls = ['fopt'];
+      if (fz.active === k) cls.push('active');
+      if (fz.pick === k) cls.push('picked');
+      if (fz.done[k]) { const s = +o.score; if (s === 0) cls.push('zero'); else if (s === 100) cls.push('wrong'); }
+      return `<button class="${cls.join(' ')}" data-k="${k}"${locked ? ' aria-disabled="true"' : ''}>
+        <span class="fl">${LETTERS[k]}</span><span class="ft">${esc(o.text)}</span><span class="fpts">${fz.done[k] ? +o.score : ''}</span>
+      </button>`;
+    }).join('');
+  }
+  function openFinalScreen() {
+    const t = finalTeam();
+    Object.assign(fz, { pick: null, active: null, done: [false, false, false], busy: false });
+    fsc.classList.remove('win');
+    fsc.querySelectorAll('.confetti').forEach(c => c.remove());
+    fsc.style.setProperty('--c', t.color);
+    $('#fsTeam').textContent = t.name;
+    $('#fsQ').textContent = S.final.q;
+    finalCol.reset();
+    renderFinalOpts();
+    setFinalMsg(`${t.name}, choose one answer`);
+    const rb = $('#fsReveal'); rb.hidden = false; rb.disabled = true;
+    $('#fsOthers').hidden = true;
+    fsc.hidden = false;
+  }
+  function closeFinal() {
+    if (fz.busy) return;
+    fsc.hidden = true;
+    fsc.querySelectorAll('.confetti').forEach(c => c.remove());
+    render();
+  }
+  function pickFinal(k) {
+    if (fz.busy || fz.done.some(Boolean)) return;
+    fz.pick = k;
+    renderFinalOpts();
+    setFinalMsg(`${finalTeam().name} choose ${LETTERS[k]}`);
+    const rb = $('#fsReveal'); rb.disabled = false; rb.focus();
+  }
+  async function revealOne(k) {
+    const v = +S.final.opts[k].score;
+    fz.active = k; renderFinalOpts();
+    finalCol.reset();
+    await wait(speed().pause);
+    await countdown(v, finalCol);
+    finalCol.finish(v);
+    fz.done[k] = true; fz.active = null;
+    renderFinalOpts();
+    return v;
+  }
+  async function revealFinal() {
+    if (fz.busy || fz.pick === null || fz.done[fz.pick]) return;
+    fz.busy = true;
+    $('#fsReveal').hidden = true;
+    setFinalMsg('');
+    const v = await revealOne(fz.pick);
+    const t = finalTeam();
+    if (v === 0) { setFinalMsg(`Pointless! ${t.name} win the final!`, 'gold'); fsc.classList.add('win'); sfx.pointless(); confetti(); }
+    else if (v === 100) { setFinalMsg('Wrong answer: 100 points', 'red'); sfx.wrong(); }
+    else { setFinalMsg(`${v} point${v === 1 ? '' : 's'}: not pointless this time`); sfx.ding(); }
+    fz.busy = false;
+    renderFinalOpts();
+    const others = $('#fsOthers');
+    others.hidden = false;
+    others.focus();
+  }
+  async function revealOthers() {
+    if (fz.busy) return;
+    fz.busy = true;
+    $('#fsOthers').hidden = true;
+    for (let k = 0; k < 3; k++) {
+      if (fz.done[k]) continue;
+      const v = await revealOne(k);
+      if (v === 0) sfx.pointless(); else if (v === 100) sfx.wrong(); else sfx.ding();
+      await wait(900);
+    }
+    fz.busy = false;
+    $('#fsBack').focus();
+  }
+  function confetti() {
+    if (window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const box = document.createElement('div');
+    box.className = 'confetti';
+    const cols = ['#ffc83d', '#3fe3ff', '#ff7ad9', '#7dff8a', '#ffffff'];
+    for (let i = 0; i < 90; i++) {
+      const p = document.createElement('i');
+      p.style.left = (Math.random() * 100) + '%';
+      p.style.background = cols[i % cols.length];
+      p.style.animationDelay = (Math.random() * 0.9) + 's';
+      p.style.animationDuration = (2.6 + Math.random() * 1.8) + 's';
+      p.style.setProperty('--x', (Math.random() * 160 - 80) + 'px');
+      p.style.setProperty('--r', (Math.random() * 720 - 360) + 'deg');
+      box.appendChild(p);
+    }
+    fsc.appendChild(box);
+    setTimeout(() => box.remove(), 6000);
+  }
+  fsOpts.addEventListener('click', e => { const b = e.target.closest('.fopt'); if (b) pickFinal(+b.dataset.k); });
+  $('#fsReveal').addEventListener('click', revealFinal);
+  $('#fsOthers').addEventListener('click', revealOthers);
+  $('#fsBack').addEventListener('click', closeFinal);
+  $('#fsX').addEventListener('click', closeFinal);
+  $('#finalBtn').addEventListener('click', openFinalSetup);
 
   /* ---------- teams panel ---------- */
   const tp = $('#teamsPanel'), tl = $('#teamList');
@@ -807,7 +1129,7 @@
   });
   $('#resetAll').addEventListener('click', () => {
     if (!confirm('Reset everything: title, teams and scores?')) return;
-    const sound = S.sound; S = fresh(); S.sound = sound; save(); renderTeams(); render(); toast('Reset');
+    const sound = S.sound; S = fresh(); S.sound = sound; S.final = blankFinal(); save(); renderTeams(); render(); toast('Reset');
   });
   $('#teamsDone').addEventListener('click', closeTeams);
   $('#teamsBtn').addEventListener('click', openTeams);
@@ -858,6 +1180,14 @@
   document.addEventListener('keydown', e => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     const k = e.key.toLowerCase();
+    if (!fsc.hidden) {
+      if (fz.busy) return;
+      if (e.key === 'Escape') { closeFinal(); return; }
+      const idx = { a: 0, b: 1, c: 2 }[k];
+      if (idx !== undefined) { e.preventDefault(); pickFinal(idx); }
+      return;
+    }
+    if (!fsu.hidden) { if (e.key === 'Escape') closeFinalSetup(); return; }
     if (!rvEl.hidden) {
       if (rv.busy) return;
       if (!form.hidden) {
