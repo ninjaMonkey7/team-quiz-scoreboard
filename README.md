@@ -29,6 +29,7 @@ Shortcuts in the score panel: **P** pointless (0), **W** wrong (100), **A** anot
 | **Undo** or **U** | Remove the last score |
 | Score chip on a card | Click to remove that one score |
 | **Teams** | Rename, recolour, add or remove teams (up to 8); start a new game; reset |
+| Speed | Countdown speed: Slow (default, 0 takes 9s), Medium (6s) or Fast (3.4s) |
 | Sound | Turn the countdown sound on or off |
 
 ## Hosting
